@@ -24,13 +24,13 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Import game files
+      - name: Update game files
         shell: bash
         run: |
           set -euo pipefail
-          if [ ! -f package.json ]; then
-            curl -fLsS --retry 3 'https://c908e696-38f7-477e-9b88-0311fe38d51f.sandbox.floot.app/_cdn/static/inou-code-v020-stable.zip' -o /tmp/game.zip
-            echo 'd72cef0ab7982b8d822ad201224b1b7a61e54174b3c29ac2a7d7d797ee93c5a3  /tmp/game.zip' | sha256sum -c -
+          if ! grep -q '"version": "0.3.0"' package.json 2>/dev/null; then
+            curl -fLsS --retry 3 'https://c908e696-38f7-477e-9b88-0311fe38d51f.sandbox.floot.app/_cdn/static/inou-code-ui-v0.3.0-final.zip' -o /tmp/game.zip
+            echo '128da62dd2e531601b1bdc64b167f2afbcb1d5386e3f28e429176b6b3b8cbd6d  /tmp/game.zip' | sha256sum -c -
             unzip -q -o /tmp/game.zip -d . -x '.github/workflows/*'
             test -s package.json
             test -s package-lock.json
@@ -38,7 +38,7 @@ jobs:
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git add -A
             if ! git diff --cached --quiet; then
-              git commit -m 'Import Inou Code v0.2.0'
+              git commit -m 'Update Inou Code to v0.3.0'
               git push origin HEAD:main
             fi
           fi
