@@ -1,0 +1,17 @@
+{
+  "name": "異能コード",
+  "short_name": "異能コード",
+  "description": "性格診断から始まるサバイバルRPG",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#070e1b",
+  "theme_color": "#070e1b",
+  "icons": [
+    {
+      "src": "assets/09452caf-1c86-440a-aa80-cbd0e6477dd0.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ]
+}

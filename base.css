@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&family=Zen+Old+Mincho:wght@500;600;700;800&display=swap');
+:root {
+  /* Overlay layers */
+  --z-overlay: 400;
+  --z-spotlight: 1000; /* Tutorial spotlights/guided help */
+  /* System layers */
+  --z-critical: 2000; /* Critical system notifications */
+  /* spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
+  --spacing-20: 5rem;
+}
+:root {
+  --background: #070e1b; --foreground: #f0f5fc;
+  --surface: #101c2e; --surface-foreground: #eaf4ff;
+  --sidebar: #0d1727; --sidebar-foreground: #f0f5fc;
+  --card: #142237; --card-foreground: #eff7ff;
+  --popup: #172638; --popup-foreground: #f0f5fc;
+  --primary: #73e5f5; --primary-foreground: #061320;
+  --secondary: #253b54; --secondary-foreground: #e9f8ff;
+  --accent: #d4ac70; --accent-foreground: #0a101b;
+  --muted: #18263a; --muted-foreground: #96afc4;
+  --success: #70d9b8; --success-foreground: #072018;
+  --error: #ff7286; --error-foreground: #29080f;
+  --warning: #efb96e; --warning-foreground: #251400;
+  --info: #7ac9e9; --info-foreground: #061923;
+  --info-hover: #90d5ee; --info-active: #5fbadc;
+  --border: #284057;
+  --font-family-base: 'Noto Sans JP', sans-serif;
+  --font-family-display: 'Zen Old Mincho', serif;
+  --font-family-monospace: 'Rajdhani', monospace;
+  --font-family-cursive: 'Zen Old Mincho', serif;
+  --shadow: 0 8px 24px #0004; --shadow-md: 0 14px 35px #0007; --shadow-lg: 0 24px 55px #0009;
+  --shadow-focus: 0 0 0 3px #73e5f555;
+  --radius-sm: 5px; --radius: 10px; --radius-md: 14px; --radius-lg: 22px; --radius-full: 999px;
+  --animation-duration-fast: 150ms; --animation-duration-normal: 250ms; --animation-duration-slow: 600ms;
+  --chart-color-1: #73e5f5; --chart-color-2: #ff7286; --chart-color-3: #d4ac70; --chart-color-4: #9b9ef5; --chart-color-5: #70d9b8;
+}
+.dark { 
+  --background: #070e1b; --foreground: #f0f5fc;
+  --surface: #101c2e; --surface-foreground: #eaf4ff;
+  --sidebar: #0d1727; --sidebar-foreground: #f0f5fc;
+  --card: #142237; --card-foreground: #eff7ff;
+  --popup: #172638; --popup-foreground: #f0f5fc;
+  --primary: #73e5f5; --primary-foreground: #061320;
+  --secondary: #253b54; --secondary-foreground: #e9f8ff;
+  --accent: #d4ac70; --accent-foreground: #0a101b;
+  --muted: #18263a; --muted-foreground: #96afc4;
+  --border: #284057;
+}
+
+html,body,#root{margin:0;padding:0;min-height:100%;width:100%}
+html{background:#070e1b}
+body{background:#070e1b;color:#f0f5fc;overflow-x:hidden}
+button{font-family:inherit}
