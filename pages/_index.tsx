@@ -65,6 +65,7 @@ export default function IndexPage() {
   const [hydrated,setHydrated] = useState(false);
   const [archiveReturn,setArchiveReturn] = useState<Phase>('title');
   const [archiveFilter,setArchiveFilter] = useState('全種類');
+  const [expandedAbility,setExpandedAbility] = useState<string | null>(null);
   const [fight,setFight] = useState<FightState | null>(null);
   const [sound,setSound] = useState(false);
   const [showHelp,setShowHelp] = useState(false);
@@ -191,13 +192,13 @@ export default function IndexPage() {
     }
   };
 
-  return <div className={styles.viewport}>
+  return <div className={styles.viewport} data-phase={phase}>
     <div className={styles.shell}>
       <div className={styles.topbar}>
         <div className={styles.brandSmall}><span className={styles.brandDiamond}>◈</span> <strong>CODE</strong><span className={styles.serial}>  /  13TH WARD</span><span className={styles.topSignal}><span/> ONLINE</span></div>
         <div className={styles.topActions}>
-          <button type="button" aria-label="操作説明" className={styles.iconButton} onClick={()=>setShowHelp(v=>!v)}><CircleHelp size={17}/></button>
-          <button type="button" aria-label="効果音切替" className={styles.iconButton} onClick={()=>setSound(v=>!v)}>{sound?<Volume2 size={17}/>:<VolumeX size={17}/>}</button>
+          <button type="button" aria-label="操作説明" aria-expanded={showHelp} className={styles.iconButton} onClick={()=>setShowHelp(v=>!v)}><CircleHelp size={17}/></button>
+          <button type="button" aria-label="効果音切替" aria-pressed={sound} className={styles.iconButton} onClick={()=>setSound(v=>!v)}>{sound?<Volume2 size={17}/>:<VolumeX size={17}/>}</button>
         </div>
       </div>
 
@@ -219,7 +220,7 @@ export default function IndexPage() {
             {saved&&<Button size="lg" variant="outline" onClick={()=>setPhase(completed?'finish':GameData.scenes.find(x=>x.id===sceneId)?.end?'interlude':'story')} className={styles.altButton}><Save size={17}/> 続きから再開 <ChevronRight size={17}/></Button>}
             <Button variant="ghost" onClick={showArchive} className={styles.ghostButton}><BookOpen size={16}/> 異能図鑑を見る （{archiveCount}種）</Button>
           </div>
-          <p className={styles.versionTag}>DESIGN UPDATE v0.2.0 · CHAPTER 01–03 · OFFLINE SOLO</p>
+          <p className={styles.versionTag}>VISUAL EDITION v0.3.0 · CHAPTER 01–03 · OFFLINE SOLO</p>
         </div>
       </>}
 
@@ -228,7 +229,7 @@ export default function IndexPage() {
         <Meter value={quizIndex+1} max={10} color="#73e5f5" height={3}/>
         <div className={styles.quizSegments}>{Array.from({length:10},(_,i)=><i key={i} className={i<=quizIndex?styles.quizSegmentActive:''}/>)}</div>
         <div className={styles.scanVisual}><div className={styles.scanCornerTL}/><div className={styles.scanCornerBR}/><div className={styles.scanCircle}><div className={styles.scanInside}><Fingerprint size={48} strokeWidth={.85}/></div></div><div className={styles.scanLabel}><Activity size={13}/> 深層意識を解析中<span className={styles.loadingDots}>...</span></div></div>
-        <div className={styles.questionArea}><div className={styles.microText}>QUESTION {String(quizIndex+1).padStart(2,'0')}</div><h2>{GameData.quiz[quizIndex].q}</h2><p>直感で一つ選んでください。正解はありません。</p></div>
+        <div className={styles.questionArea} aria-live="polite"><div className={styles.microText}>QUESTION {String(quizIndex+1).padStart(2,'0')}</div><h2>{GameData.quiz[quizIndex].q}</h2><p>直感で一つ選んでください。正解はありません。</p></div>
         <div className={styles.optionList}>{GameData.quiz[quizIndex].opts.map((op,i)=><Button key={i} variant="outline" className={styles.quizOption} onClick={()=>answerQuiz(op.trait)}><span className={styles.optionLetter}>{String.fromCharCode(65+i)}</span><span>{op.text}</span><ChevronRight size={18}/></Button>)}</div>
         <div className={styles.quizBottom}>診断はゲーム内のタイプ分類です。医療・心理学的判定ではありません。</div>
       </div>}
@@ -318,17 +319,26 @@ export default function IndexPage() {
         <p>第13区で観測された異能を記録。体験版で実際に発動できる能力は6種類です。</p>
         <div className={styles.archiveOverview}><div><strong>060</strong><span>収録能力</span></div><div><strong>006</strong><span>使用可能</span></div><div><strong>003</strong><span>エピソード</span></div></div>
         <div className={styles.archiveFilters}>
-          {['全種類',...GameData.archiveEntries.map(x=>x.category)].map(f=><Button key={f} variant={archiveFilter===f?'primary':'outline'} size="sm" onClick={()=>setArchiveFilter(f)}>{f}</Button>)}
+          {['全種類',...GameData.archiveEntries.map(x=>x.category)].map(f=><Button key={f} variant={archiveFilter===f?'primary':'outline'} aria-pressed={archiveFilter===f} size="sm" onClick={()=>{setArchiveFilter(f);setExpandedAbility(null);}}>{f}</Button>)}
         </div>
         <div className={styles.archiveSectionLabel}><span>ABILITY RECORDS</span><span>{currentCategory.reduce((n,c)=>n+c.entries.length,0)} ENTRIES</span></div>
         <div className={styles.archiveItems}>{currentCategory.flatMap(cat=>cat.entries.map(a=>({ ...a,category:cat.category }))).map((a,i)=>{
           const playable=GameData.traits.some(x=>x.ability===a.name) || (a.name==='残響複写');
-          return <div className={styles.archiveItem} key={a.category+a.name}>
-            <div className={styles.archiveIcon}>{playable?<Zap size={17}/>:<LockKeyhole size={16}/>}</div>
-            <div><strong>{a.name}</strong><small>{a.category} · {playable?'体験版で使用可能':'正式版向け構想'}</small></div>
+          const key=a.category+a.name;
+          const expanded=expandedAbility===key;
+          const active=GameData.traits.find(x=>x.ability===a.name);
+          return <button type="button" className={styles.archiveItem} key={key} aria-expanded={expanded} onClick={()=>setExpandedAbility(expanded?null:key)}>
+            <span className={styles.archiveIcon}>{playable?<Zap size={17}/>:<LockKeyhole size={16}/>}</span>
+            <span className={styles.archiveText}><strong>{a.name}</strong><small>{a.category} · {playable?'体験版で使用可能':'正式版向け構想'}</small></span>
             <span className={[styles.rarity,styles['rarity'+a.rarity]].join(' ')}>{a.rarity}</span>
-          </div>;
+            {expanded&&<span className={styles.archiveDetail}>
+              <span className={styles.archiveDetailTitle}>ABILITY FILE / {a.rarity}</span>
+              <span className={styles.archiveDetailText}>{active?active.desc:'第13区で観測が報告された異能。能力の詳細は正式版で解放予定です。'}</span>
+              <span className={styles.archiveDetailHint}>{active?'発現スキル：'+active.skill+' ／ '+active.tip:'現在は図鑑への記録のみ。体験版では使用できません。'}</span>
+            </span>}
+          </button>;
         })}</div>
+        <p className={styles.archiveFootnote}>異能をタップすると記録の詳細を確認できます。</p>
       </div>}
     </div>
   </div>;
