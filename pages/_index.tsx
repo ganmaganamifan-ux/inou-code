@@ -83,6 +83,7 @@ export default function IndexPage() {
   const [archiveFilter,setArchiveFilter] = useState('全種類');
   const [expandedAbility,setExpandedAbility] = useState<string | null>(null);
   const [fight,setFight] = useState<FightState | null>(null);
+  const [battleFx,setBattleFx] = useState<{kind:FightAction;seq:number;damage:number;taken:number;heal:number}|null>(null);
   const [sound,setSound] = useState(false);
   const [showHelp,setShowHelp] = useState(false);
   const [copyMessage,setCopyMessage] = useState('');
@@ -129,12 +130,12 @@ export default function IndexPage() {
     const target=GameData.scenes.find(s=>s.id===id);
     if(target) setMaxChapter(n=>Math.max(n,target.ch));
     setPhase('story');setSaved(true);
-    setFight(null);
+    setFight(null);setBattleFx(null);
   };
   const startNew=()=>{
     setAnswers([]);setQuizIndex(0);setSceneId('c1_1');
     setTrait('insight');setTrust(0);setIntel(0);setMaxChapter(1);
-    setCompleted(false);setSaved(false);setFight(null);try{window.localStorage.removeItem(SAVE_KEY);}catch(e){}setPhase('quiz');
+    setCompleted(false);setSaved(false);setFight(null);setBattleFx(null);try{window.localStorage.removeItem(SAVE_KEY);}catch(e){}setPhase('quiz');
   };
   const answerQuiz=(choice:TraitId)=>{
     soundFx(740);
@@ -156,6 +157,7 @@ export default function IndexPage() {
     const foe=GameData.enemies.find(x=>x.id===scene.battle);
     if(!foe)return;
     setFight({enemyId:foe.id,hp:maxHp,foeHp:foe.hp,energy:3,turn:0,result:'',log:['戦闘開始。相手の動きを見て行動を選ぼう。'],lastEffect:''});
+    setBattleFx(null);
     soundFx(180);setPhase('combat');
   };
   const fightAction=(action:FightAction)=>{
@@ -181,6 +183,7 @@ export default function IndexPage() {
     const more=hit===0?'敵の攻撃を防いだ。':('敵から '+hit+' ダメージを受けた。');
     const result=foeHp===0?'win':hp===0?'lose':'' as FightState['result'];
     setFight({...fight,turn:fight.turn+1,hp,foeHp,energy:Math.min(4,Math.max(0,fight.energy+(action==='skill'?-2:focus))),result,log:[msg,damage?('敵に '+damage+' ダメージ。'):'',foeHp===0?'敵の戦闘能力が停止した。':more].filter(Boolean),lastEffect:action==='skill'?picked.skill:''});
+    setBattleFx({kind:action,seq:fight.turn+1,damage,taken:hit,heal});
     soundFx(result==='win'?990:result==='lose'?130:action==='skill'?850:380);
   };
   const finishBattle=()=>{const target=scene.next||'c1_after';advance(target);};
@@ -236,7 +239,7 @@ export default function IndexPage() {
             {saved&&<Button size="lg" variant="outline" onClick={()=>setPhase(completed?'finish':GameData.scenes.find(x=>x.id===sceneId)?.end?'interlude':'story')} className={styles.altButton}><Save size={17}/> 続きから再開 <ChevronRight size={17}/></Button>}
             <Button variant="ghost" onClick={showArchive} className={styles.ghostButton}><BookOpen size={16}/> 異能図鑑を見る （{archiveCount}種）</Button>
           </div>
-          <p className={styles.versionTag}>VISUAL EDITION v0.4.0 · CHAPTER 01–03 · OFFLINE SOLO</p>
+          <p className={styles.versionTag}>VISUAL EDITION v0.5.0 · CHAPTER 01–03 · OFFLINE SOLO</p>
         </div>
       </>}
 
@@ -282,8 +285,22 @@ export default function IndexPage() {
 
       {phase==='combat'&&enemy&&fight&&<>
         <div className={styles.combatTop}><ChapterTag chapter={scene.ch}/><div className={styles.combatCount}>TURN {String(fight.turn+1).padStart(2,'0')}</div></div>
-        <div className={styles.combatArt}>
+        <div className={[styles.combatArt,isHeavyAttack&&!fight.result?styles.combatDanger:''].join(' ')}>
           <Landscape bg={scene.bg} portrait={enemy.portrait} threat/>
+          {battleFx&&<div key={battleFx.seq} className={[styles.battleFx,styles['battleFx_'+battleFx.kind]].join(' ')} aria-hidden="true">
+            <div className={styles.fxShade}/>
+            <div className={styles.fxImpact}/>
+            <div className={styles.fxRing}/>
+            <div className={styles.fxSlash}/>
+            <div className={[styles.fxSlash,styles.fxSlashSecond].join(' ')}/>
+            <div className={styles.fxShield}/>
+            <div className={styles.fxScan}/>
+            <div className={styles.fxParticles}>{Array.from({length:10},(_,i)=><i key={i} style={{'--particle':i} as React.CSSProperties}/>)}</div>
+            <div className={styles.fxActionTitle}>{battleFx.kind==='skill'?picked.ability:battleFx.kind==='attack'?'STRIKE':battleFx.kind==='defend'?'GUARD':'SCAN'}</div>
+            {battleFx.damage>0&&<div className={styles.fxDamage}>-{battleFx.damage}<small>DAMAGE</small></div>}
+            {battleFx.taken>0&&<div className={styles.fxTaken}>-{battleFx.taken} HP</div>}
+            {battleFx.heal>0&&<div className={styles.fxHealing}>+{battleFx.heal} HP</div>}
+          </div>}
           <div className={styles.combatAlert}><span className={styles.combatAlertDot}/> HOSTILE SIGNAL DETECTED</div>
           <div className={styles.enemyLabel}><span>{enemy.title}</span><strong>{enemy.name}</strong></div>
         </div>
