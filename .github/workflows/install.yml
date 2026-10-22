@@ -1,19 +1,15 @@
-name: Inou Code v0.5.0 Battle FX
-
+name: Inou Code v0.5.1 One-Screen Battle
 on:
   push:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: write
   pages: write
   id-token: write
-
 concurrency:
   group: github-pages
   cancel-in-progress: false
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -21,107 +17,38 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-
-      - name: Apply battle design update
-        env:
-          INOU_PATCH: >-
-            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
+      - name: Install one-screen battle layout
         shell: bash
         run: |
-          python3 - <<'PYTHON'
-          import os, base64, gzip
-          patch = gzip.decompress(base64.b64decode(os.environ['INOU_PATCH']))
-          exec(compile(patch, 'inou_battle_update_v050.py', 'exec'))
-          PYTHON
+          set -euo pipefail
+          if ! grep -q 'INOU v0.5.1 ONE-SCREEN COMBAT' pages/_index.module.css; then
+            printf '%s' 'H4sIAAAAAAAC/7VYXW/bNhR996/gChiwC9OVbEtxHKxYUwTdgC4BugwYMOyBkiiLmCQKFGM7LfLfxy/ZkizbVNq92DJN3o/Dw3N5NXj3Fvx2//An2DhTb+qCh/s7+MfHL3d39+Djw++3Hx7B23eDhGfpKkHlaLoheFtQxv+OEEewEGP45zchzQLE3/wzngwCGj3bzATfBgDQDWZxSrcrkJAowvmNGStDRtMUBjhBG0LZCuQ0xzeDl8F5o8pmQUvCCc1XICY7HEmTJC8xXwFHPm9JxJMVcB1nKH8mmKwTrn5Hm0SOZCSH1ahakaEdPJ5WoCgi+drM+dGJTMsEp6nK53TAQ5twh7VgYUA5p9mZmAPKIswgQxF5Ks28iJRFip5XYM2IglN+Q44zMcoxZHQrZi4WxQ4sluJDBCRCGAnXxW4C3JiNqyFnAryr4dgmfU6LADGVf5WL9NCZ8GEngDuTcy6b10+PtGh6WF7y4In8rH0kqOCYPaI1KAuUr2LCSg7DhKQR+AZimnNYkq9YbJIrDIL+BlN0wp4ECqQkxwceTGdWHtTTB8YvEQ/8RDJpB+W8E7BjavVxPi3EwaG5CqJiLHR9vTmcobyMKRNj6lFy8K8R9JzhGJQhSvFo6nvjVoD7RZAysiZCG0KcCyyN+R7hpdigIxi6Alc6phTHInPDnj1Z5IkwQdd2Z2nHHpzj7PkzCnDagME4ZBrrLo9Xve2XnNF83eLQ3JKT6umWIhY1jtJJdeoSnb3AxCnWcIlvGBGGQy3kIU2fsryR6rU5iVLuRkupNDjfjEoUY4gYRlBJvtG7cZMOl7MSXzzFv2IkfU1sp5OcX55b0C1m95STEAvE95nLslAP0gL6mOJbxC57TDCjt0ZLJbBSJx2AnjjV1YKJ8wBr/OqJlQ4DvBe5bOoaZx/Y0VIdao2MjtHlZqyWOmwCDOwDCl53FoyjaYaFsth70/OFy+qc+M09AFaHma2fv9Dt2U3WYy3rzfrpqArX/PtoI/rE816Vqhaenh2e4jwJkT6VUl1Y2uWodgPyDHe6dKdR1pedHPPPwuEa+W+VWs8GI5OdgadlYt4Dny75vrZDWAvXZ7ouWyjPDWpVRPL3uZp/ZgPaymazF9f1veimbY/kVJWb9AGj+E5prptqXNPqxS5IafhvC5ltQsSNWnAixNLxlqHiFGAc7zg8/CG6BVKUpLSjqNeA1wZNpErxJ3HzP3EgW7dFc47ULama0uwbdFEXrQPDBUZ8NJvU+gTZNozVGlS8pirpcG953riVhCnKipGnGpOl6OMmwBf4jHswe09TX9O09feJDGezQ19kkju7ULdUruym3GMF0mahQsb/DmTKjVSNat+k/h2ub0s7ATkYC7pahjoRZ5qIP4LhvZLMkOyjXyGOsYTiYYP1zamLz+1D8GJR89Oi9ZICBaXYT45vqp5i4debiuruw6p7tf75VVxwI+ndnR01/aIJCkeqS4PAF/PHdYDh82of7S8ZjggCo/pi/1quUDHav6I48UpAFo3F/ED9a7/jjYDvDFWALxYeq7cCh47d0Xt5eWmt4z+snvdb3e5NrZpRb94+6/YOD31Vh/JI/LxejY+d65p07pHy3KM7aTd9vLk1feqXj7PV9n/dnsXsNRhVV9PGuZt7tnTqgnjhdUD8H83fz3ScFQAA' | base64 -d | gzip -d >> pages/_index.module.css
+          fi
+          npm pkg set version=0.5.1
           npm install --package-lock-only --no-audit --no-fund
-
-      - name: Install packages
-        run: npm ci --no-audit --no-fund
-
-      - name: Verify TypeScript and build
-        run: npm run build
-
-      - name: Save source to GitHub
+      - name: Build and typecheck
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+      - name: Commit game update
         shell: bash
         run: |
+          set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add pages/_index.tsx pages/_index.module.css package.json package-lock.json
+          git add pages/_index.module.css package.json package-lock.json
           if ! git diff --cached --quiet; then
-            git commit -m 'Battle portrait and impact effects v0.5.0'
+            git commit -m 'One-screen battle layout v0.5.1'
             git push origin HEAD:main
           fi
-
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload game
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
-
-      - name: Deploy game
+      - uses: actions/deploy-pages@v4
         id: deployment
-        uses: actions/deploy-pages@v4
