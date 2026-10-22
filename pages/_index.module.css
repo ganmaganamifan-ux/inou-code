@@ -964,3 +964,14 @@ body:has(.viewport[data-phase="combat"]) {
   .viewport[data-phase="combat"] .intent { max-height: 35px; }
   .viewport[data-phase="combat"] .actionBtn { height: 45px !important; }
 }
+
+/* INOU v0.6.0 CHARACTER ART: drawn portraits from approved character sheet */
+.person{isolation:isolate}
+.person > div{display:none!important}
+.person::before{content:"";position:absolute;left:0;top:0;width:220px;height:300px;z-index:2;background-image:url("./character-portraits.avif");background-size:220px 1800px;background-repeat:no-repeat;background-position:0 0;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 67%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 67%,transparent 100%);filter:drop-shadow(0 12px 26px #020b1ccc)}
+.person_hero::before{background-position:0 0}
+.person_aoi::before{background-position:0 -300px}
+.person_hunter::before{background-position:0 -600px}
+.person_kai::before{background-position:0 -900px}
+.person_cleaner::before{background-position:0 -1200px}
+.person_observer::before{background-position:0 -1500px}

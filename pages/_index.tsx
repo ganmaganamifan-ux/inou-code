@@ -24,7 +24,7 @@ function StoryText({text, system}: {text:string; system:boolean}) {
   return <>
     {lines.map((line,i)=>{
       if(system){
-        const field=line.match(/^(固有異能|適合タイプ)[：:]\s*(.*)$/);
+        const field=line.match(/^(固有コード|適合タイプ)[：:]\s*(.*)$/);
         if(field) return <span key={i} className={styles.systemDataRow}><span>{field[1]}</span><strong>{field[2]}</strong></span>;
         if(line.startsWith('警告')) return <span key={i} className={styles.systemWarningLine}>{line}</span>;
         return <span key={i} className={styles.systemTextLine}>{line||'\u00a0'}</span>;
@@ -175,7 +175,7 @@ export default function IndexPage() {
       if(trait==='drive'){damage=22;selfHit=3;msg='限界突破！ 代償と引き換えに強烈な一撃。';}
       if(trait==='caution'){damage=10;dodge=true;msg='注意逸らし！ 敵の視界から消えて攻撃した。';}
       if(trait==='bond'){damage=10;reduction=8;heal=3;msg='感覚共有！ 仲間の気配が盾になる。';}
-      if(trait==='chaos'){damage=15+pattern*3;reduction=3;msg='残響複写！ 敵の異能の残響を反転させた。';}
+      if(trait==='chaos'){damage=15+pattern*3;reduction=3;msg='残響複写！ 敵のコードの残響を反転させた。';}
     }
     let foeHp=Math.max(0,fight.foeHp-damage);
     const hit=foeHp===0?0:dodge?0:Math.max(0,enemy.strike+pattern*3-reduction-(trust>=5?1:0));
@@ -201,7 +201,7 @@ export default function IndexPage() {
   const chapterPercent=Math.round(sceneNumber / Math.max(1,sceneCount.length)*100);
   const isHeavyAttack=!!(fight && enemy && enemy.pattern[fight.turn%enemy.pattern.length]===2);
   const copyResult=async()=>{
-    const summary='異能コード｜私の固有能力は「'+picked.ability+'」【'+picked.rarity+'】！性格タイプ：'+picked.name+' #異能コード';
+    const summary='異能コード｜私の固有コードは「'+picked.ability+'」【'+picked.rarity+'】！性格タイプ：'+picked.name+' #異能コード';
     try {
       if(!navigator.clipboard?.writeText) throw Error('clipboard unavailable');
       await navigator.clipboard.writeText(summary);
@@ -233,7 +233,7 @@ export default function IndexPage() {
           <div className={styles.titleRule}/>
           <p className={styles.titleCatch}>その性格が、<br/><em>唯一の武器</em>になる。</p>
           <p className={styles.titleDescription}>隔離された街で目覚める、あなただけの異能。<br/>選択と知略で生き残る、全3話の体験版。</p>
-          <div className={styles.titleFeatures}><span><Fingerprint size={13}/> 10問の性格診断</span><span><Zap size={13}/> 6つの固有異能</span><span><BookOpen size={13}/> 60種の図鑑</span></div>
+          <div className={styles.titleFeatures}><span><Fingerprint size={13}/> 10問の性格診断</span><span><Zap size={13}/> 6つの固有コード</span><span><BookOpen size={13}/> 60種の図鑑</span></div>
           <div className={styles.titleCtas}>
             <Button size="lg" onClick={startNew} className={styles.mainButton}><Play size={16} fill="currentColor"/> {saved?'最初から始める':'診断してゲーム開始'} <ChevronRight size={17}/></Button>
             {saved&&<Button size="lg" variant="outline" onClick={()=>setPhase(completed?'finish':GameData.scenes.find(x=>x.id===sceneId)?.end?'interlude':'story')} className={styles.altButton}><Save size={17}/> 続きから再開 <ChevronRight size={17}/></Button>}
@@ -254,13 +254,13 @@ export default function IndexPage() {
       </div>}
 
       {phase==='reveal'&&<div className={styles.revealWrap} style={{'--power-color':picked.color} as React.CSSProperties}>
-        <div className={styles.awakenHeadline}>CODE 13 // ABILITY AWAKENED</div><p className={styles.awakenSubline}>固有異能の発現を確認</p>
+        <div className={styles.awakenHeadline}>CODE AWAKENED</div><p className={styles.awakenSubline}>固有コードの覚醒を確認</p>
         <div className={styles.revealArt}><div className={styles.revealPowerWords} aria-hidden="true">覚醒</div><div className={styles.revealSeal}/><div className={styles.revealOrbit}><Zap size={48} strokeWidth={1.2}/></div><div className={styles.revealCoordinates}>UNIQUE ID 13-{picked.kind}</div></div>
         <div className={[styles.revealRarity,styles['rank'+picked.rarity]].join(' ')}><span className={styles.rankPill}>{picked.rarity}</span><span className={styles.rankCaption}>INITIAL ABILITY</span></div>
         <div className={styles.revealType}>あなたは ― <strong>{picked.name}</strong></div>
         <h1 className={styles.revealName}>{picked.ability}</h1>
         <div className={styles.revealDescription}>{picked.desc}</div>
-        <div className={styles.skillCard}><div className={styles.skillCardTop}><span><Zap size={14}/> 初期スキル</span><b>SKILL / 001</b></div><div className={styles.skillCardBody}><strong>{picked.skill}</strong><p>{picked.tip}</p><div className={styles.skillCardFoot}><Activity size={13}/> 戦闘で発動できる固有能力</div></div></div>
+        <div className={styles.skillCard}><div className={styles.skillCardTop}><span><Zap size={14}/> 初期スキル</span><b>SKILL / 001</b></div><div className={styles.skillCardBody}><strong>{picked.skill}</strong><p>{picked.tip}</p><div className={styles.skillCardFoot}><Activity size={13}/> 戦闘で発動できる固有コード</div></div></div>
         <Button variant="outline" className={styles.copyButton} onClick={copyResult}><Copy size={15}/> 診断結果をコピーして共有</Button>
         {copyMessage&&<div className={styles.feedbackMessage} role="status"><Check size={14}/>{copyMessage}</div>}
         <p className={styles.revealDisclaimer}>※体験版ではタイプごとに能力を固定。レア度の抽選は未実装。</p>
@@ -310,7 +310,7 @@ export default function IndexPage() {
           <div className={styles.heroBar}><div><span>YOU <em> / {picked.ability}</em></span><b>{fight.hp} / {maxHp} HP</b></div><Meter value={fight.hp} max={maxHp} color="#78e0ec"/></div>
           <div className={styles.energyRow}>ABILITY ENERGY <span>{[1,2,3,4].map(i=><span key={i} className={i<=fight.energy?styles.energyActive:styles.energyEmpty}>◆</span>)}</span></div>
           <div className={[styles.intent,isHeavyAttack&&!fight.result?styles.intentCritical:''].join(' ')}>{isHeavyAttack&&!fight.result?<ShieldAlert size={17}/>:<Eye size={16}/>}<span><strong>{fight.result?'STATUS REPORT':isHeavyAttack?'危険：強力な攻撃が来る！':'ENEMY INTENT'}</strong>{fight.result==='win'?'ターゲット鎮圧を確認。':fight.result==='lose'?'戦闘継続不可。リトライできます。':currentIntent}</span></div>
-          {fight.lastEffect&&<div className={styles.powerNotice}><Zap size={13}/> 異能発動 · {fight.lastEffect}</div>}
+          {fight.lastEffect&&<div className={styles.powerNotice}><Zap size={13}/> コード発動 · {fight.lastEffect}</div>}
           <div className={styles.battleLogs}><span className={styles.battleLogLabel}>BATTLE LOG</span>{fight.log.map((l,i)=><p key={i}>{l}</p>)}</div>
           {fight.result?<div className={styles.fightOver}>
             <div className={styles.fightResult}>{fight.result==='win'?'BATTLE CLEAR':'MISSION FAILED'}</div>
@@ -339,7 +339,7 @@ export default function IndexPage() {
           <p>{trust>=6&&trust>=intel?'誰かを守るために選んだ道。仲間の声が、記録されない未来を呼び覚ました。':intel>=6&&intel>trust?'真実を求めて選んだ道。あなたが持ち帰った記録には、まだ誰も知らない名前がある。':'守るべきものと真実の間で揺れた道。第13区は、あなたの次の選択を待っている。'}</p>
         </div>
         <div className={styles.cliffhanger}>TO BE CONTINUED <span>—</span> 04</div>
-        <Button variant="outline" className={styles.copyButton} onClick={copyResult}><Copy size={15}/> あなたの固有能力を共有する</Button>
+        <Button variant="outline" className={styles.copyButton} onClick={copyResult}><Copy size={15}/> あなたの固有コードを共有する</Button>
         {copyMessage&&<div className={styles.feedbackMessage} role="status"><Check size={14}/>{copyMessage}</div>}
         <Button size="lg" className={styles.mainButton} onClick={startNew}><RotateCcw size={16}/> 別の能力でもう一度遊ぶ</Button>
         <Button variant="outline" className={styles.altButton} onClick={showArchive}><BookOpen size={16}/> 60種の異能図鑑</Button>
@@ -349,7 +349,7 @@ export default function IndexPage() {
       {phase==='archive'&&<div className={styles.archiveWrap}>
         <div className={styles.archiveTitle}><Button variant="ghost" size="sm" onClick={()=>setPhase(archiveReturn)} className={styles.backButton}><ArrowLeft size={18}/> 戻る</Button><span>ARCHIVE / 060</span></div>
         <h1>異能図鑑</h1>
-        <p>第13区で観測された異能を記録。体験版で実際に発動できる能力は6種類です。</p>
+        <p>第13区で観測されたコードを記録。体験版で実際に発動できる能力は6種類です。</p>
         <div className={styles.archiveOverview}><div><strong>060</strong><span>収録能力</span></div><div><strong>006</strong><span>使用可能</span></div><div><strong>003</strong><span>エピソード</span></div></div>
         <div className={styles.archiveFilters}>
           {['全種類',...GameData.archiveEntries.map(x=>x.category)].map(f=><Button key={f} variant={archiveFilter===f?'primary':'outline'} aria-pressed={archiveFilter===f} size="sm" onClick={()=>{setArchiveFilter(f);setExpandedAbility(null);}}>{f}</Button>)}
@@ -371,7 +371,7 @@ export default function IndexPage() {
             </span>}
           </button>;
         })}</div>
-        <p className={styles.archiveFootnote}>異能をタップすると記録の詳細を確認できます。</p>
+        <p className={styles.archiveFootnote}>コードをタップすると記録の詳細を確認できます。</p>
       </div>}
     </div>
   </div>;
