@@ -975,3 +975,48 @@ body:has(.viewport[data-phase="combat"]) {
 .person_kai::before{background-position:0 -900px}
 .person_cleaner::before{background-position:0 -1200px}
 .person_observer::before{background-position:0 -1500px}
+
+/* INOU v0.6.1 LAYERED TRANSPARENT PORTRAITS */
+/* The street scene and character are independent alpha composited layers. */
+.viewport .landscape .person{
+  left:50%;bottom:-8px;width:auto;height:min(100%,390px);aspect-ratio:3/4;
+  transform:translateX(-50%)!important;transform-origin:center bottom;
+  filter:drop-shadow(0 9px 20px rgba(0,6,18,.5));
+  isolation:isolate;pointer-events:none;
+}
+.viewport .landscape .person::before{
+  content:""!important;position:absolute;inset:0;width:100%;height:100%;z-index:2;
+  background-image:url("./character-portraits-v061.avif")!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-size:100% 400%!important;
+  background-position:center var(--portrait-row,0%)!important;
+  -webkit-mask-image:linear-gradient(#000 0 72%,rgba(0,0,0,.96) 82%,transparent 100%)!important;
+  mask-image:linear-gradient(#000 0 72%,rgba(0,0,0,.96) 82%,transparent 100%)!important;
+  filter:none!important;
+}
+.viewport .person_hero{--portrait-row:0%}
+.viewport .person_aoi{--portrait-row:33.33333%}
+.viewport .person_kai{--portrait-row:66.66667%}
+.viewport .person_cleaner{--portrait-row:100%}
+/* The patrol machine and third-chapter Observer keep their original graphics until unique art is ready. */
+.viewport .landscape .person.person_hunter::before,
+.viewport .landscape .person.person_observer::before{content:none!important}
+.viewport .person_hunter > div,
+.viewport .person_observer > div{display:block!important}
+.viewport .landscape .person.person_hunter,
+.viewport .landscape .person.person_observer{width:220px;height:300px;bottom:-18px}
+/* Hero presence on the main menu; keep existing controls fully readable. */
+.viewport[data-phase="title"] .titleArtwork .person{height:min(104%,445px);bottom:-8px;left:57%}
+/* Story scenes: proportionate character over the separate environment drawing. */
+.viewport[data-phase="story"] .storyArtwork .person{height:min(103%,425px);bottom:-8px;left:51%}
+/* Combat remains a one-screen layout with the current slash/ability FX. */
+.viewport[data-phase="combat"] .combatArt .person{height:100%;bottom:0;left:50%}
+.viewport[data-phase="combat"] .combatArt .person.person_hunter,
+.viewport[data-phase="combat"] .combatArt .person.person_observer{
+  height:300px;bottom:-15px;transform:translateX(-50%) scale(.65)!important;
+}
+@media(max-height:690px){
+  .viewport[data-phase="combat"] .combatArt .person.person_hunter,
+  .viewport[data-phase="combat"] .combatArt .person.person_observer{transform:translateX(-50%) scale(.53)!important}
+}
