@@ -1,4 +1,4 @@
-name: Inou Code v0.5.1 One-Screen Battle
+name: Inou Code v0.6.0
 on:
   push:
     branches: [main]
@@ -11,7 +11,7 @@ concurrency:
   group: github-pages
   cancel-in-progress: false
 jobs:
-  publish:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -22,28 +22,150 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Install one-screen battle layout
+      - name: Install characters and CODE
+        env:
+          IMAGE: >-
+            H4sIAAAAAAAC/113Y3Qd4NLujm01tht7x2xs2052bNtubNtoGjtpksa27e6g0e35vnPvj/us9a4Ha9bMvD8HAACQWbp5O5l42FgC/uE/7GBjyeZgY2KpIMom
+            9i+6cLBwMwH8L8itze1d/qsBTjZmboD/D6hONm4O/6Mg/j0SG3uQ2X+MxH88xP+mEFgAAKHWP01nY+No+f9qCf4ZC8j/OhMPVjZxkD3of2bZ2ji5OP1jORsn
+            M9A/xrZxdbL477xNAAAO/h+jO9l42fwngIKH/49HNvFgEw+GRv5PhGUGsndxNLP3+tcZBQAb9C/Cs3Fy+L9/+rcYNARkKPS/rYwczE3cMAGIiPgk7c/85tCc
+            BOjso9zYviQkOFYKBLZIPEKogGTU7ZsPfROuO0W11ARhhemfb8H9LZhjP+QlJvh3I962Kckqm9LwS3QT+LwtMLhbc/cqAydHlxc6vTNV+U0JtQ6aH9HbF00L
+            geasNMUgzoTzEswKzNDqSI0hfomyg36Sj/4f7PqXR8SsSCXhWAjJMB0O2YpuS/vkmkWwXkJpm+pGFzh5npfybues/ehQ5n1xtDJBrfz86DX+3RF3m9CYYhI4
+            qfu/6KzULA4QBmAp8K9CrPlcbgHALKd3fZjEmMs2t9sH9QiklFuzKYXLZpwfWBgewUyNNyK49NQN8jfIZTlVkTnngwIKaOgj58LVwAy4nx6iR8lj+pixVHQj
+            4KHr4h1yj9U2A1WcHFELYw9i/4zak5cL+8zTo9Oiht70WqIkqw2UZaOftsrScAmhNHl7giPKv3iYI8AA2Ul8jQ7opgJxoU3qkUtWuyC8wiS0Xs4dyWtgvJU1
+            qEKdhQV039oo63QLirmCqZQP9iCkmNjpXpGvmEy5wZcRo67c1/s138Q6nifXaJWZTgwDJB+Uts+TeZxiUvlii7YbLlWwoBWM0agy8nOlNJZ0sh8nYq9qdOb6
+            E/Y9L78yYwNOIA0ZjC8KxKnYg/fAz7UDak3NrwR9pdJ6rYwbO8v+WVEOeWCpkttFl6r+QW1l/qmbfSr5tdSDPUc/H0+yP8WtzpilSTm8oeRZ2zGt8wODm1RS
+            LsJMCfPksJeIveeqfgYv06/zoN+k0TqFt5XPPNqsmKFB0iP2nth7oD6x6S3VCOcZgzYKsmuhKihfDbGHkz7u9efFh4yluWU2Wp34kKAsDN+TKaGO7VN4hywm
+            I4Ew0TjHOEVfg/XsHALYDsKWWVPHBvskGGdUiNIYwPKWw8EH0asDwnY6O+GlV+s5tyQerynuhjPmMPhGKaFfj9hNMRYMWUdJ7ra+ZLjxw3TA467TO4THJlcF
+            tTqGpMeT4IswrCqM3+9ZMJ1TzpCDRgdAYXp4NApXUyJHsAmn0147jeYv9g4MtmwsRSJXygV3z4LPaTiKQhsexEkgYlSidR16pGdsUz+isyp1XTUMXlkKZwKZ
+            lC/NGjYhlOu9KNgAFNlP3v/CCCb73abWM1NRn/s1x27OAvYkBaRHEqLGaOVJlKRfLqlDq/70nq6ygKo2bZw0MbEKApCHXDT1xCoy59olfGr70tUyPLj6599w
+            iAF3HTe1IhJSHrVknHHWGg8NPTNbPwnxe5kzCjUUcb8Do9V/lpM2Itgvs3GIzleuQJG0ZbE/21GM+dsWMt6avMM/bPTIWd9zyFrPcJuFGCh/oCduR2XD/iiS
+            4YsO6yQNMTQiVVNkWWwzCQv2Awanh6vg1a8HxchgC9W6ufsv0YTaHyhXrT8Fev7JX6hJPrUNyAsIIz2NehGNq/FGT6G+5CXSwAbPAqJldswiKMgs7b4GrCX2
+            q2D/Vd7PLWaVKz1bdvBCLrdCU9urpZEB55c8w0ygZYMRuX1+OBGaGD8TgBGCr2YmMtfnff/8TkWJ0JKGJbeyalc/n5Q3SVYyFyGSlUPuj/HdL4cmbwmj712C
+            yZ/iYWqZYb5PDzSjm4rOCnNGBQ3T775E6zLlIB99YlPFrRSpZrWn/e5N7eaU977psCGNGYCmFeL2quCbFEg064Sg9j8StOxffcNQI16q7ebERwCZiX3LW3BB
+            UUOKXOdbGmIuRRzFTMPiBDOK7n7XtcSEUZKHNych5HLqYyfST4Z8zyyI3FRoFtij3XQy6q0fw4S9TuqK1P/RIuv/K9AVnu4TyWUsNMbuWaW1YxbJkUkeOqva
+            fmiVl9HtmreAuAZlOTOK3Gp9Ljc5xj7uUar8yUcGnRjZRkHEIQW11kLHWwDdJltvWPZwAkqrcx8CacuFIFFBwgJ+RW2B6u79eIvaaa0bG6HrpuJJx9cJ9n5s
+            3V7IQ9XtZ3v1xhWwRasJh5PvdyYTldP4wmr6Nx59LdxdhGc/59yHfibr1wb+C4FSiJOLQ5QZndeKoeOaC8JANMMZwr9lZmyk2952dn4xe3Z2fbiRrAEd3q1U
+            cg9BXG3vS9bamX/pKl5JFz/EUE327WMS5Ex5uZBNpbDLYX5sKxBzmY6islDKrsC2FG0Rzk/KK/yxPJPhUzUQearJyhXuIXaBJI+oAEpW55UBVpomG+58JclA
+            VCdws0jbXj8Z8HqN6Okhyr+b1H5ZMV5fzurvzXlVF1mfrz3+NtiV+Cfcbo9MeGyI1VJRlxC/kfkYD1TGupBdUoTgr7dzoSLBAtaKnFZ3RNiT0/SEGMkrwxH0
+            RdZPni5lOBVzwDcT9rAlVMuELzT4WN4+oiz4KK9tseMCL8pcpEyV3/X4ZxX1crfgKy6iuVomxxjlKj6nTZG8w5QNS41I5hY8SYkMh1XuCfGwn5dR5EBDmf2y
+            mHbkJ00SS0BG/yuVErW4ue574I2IbSeTg6ozKIlTGrHMqfDzJeR6DDmHHcXTrFr7ZcotT+D4j3hr7GD5XFe/A1NEbGIGbxkBCwzQ2JyAb2YRb+sxL23fW3VJ
+            jG2RcnQ5EWR99ggcrsKNSQmjdWSdkmirGIVw0L2sFArPQRHgfAbySsdhbpHxhlypcXbqE/VsqJ+N84rfS182Wt1/5UoeQm0izPhFXn0rxLQYOFEYaPBHkqIr
+            MD7TojfdHIb1zfKBHs9f24VjhIODs26F3BWAmcR1hl1mddrAOMnwIfjRVOjF/x3H0Ki8j3sQg+z0YwxIu/rQp+FMGvPG/Khv+51/Jw2o2wwa+HMkMH30SFxD
+            A67yv9XrgjJiS119y+n9FFCpvKBQSSmqQsKHon3opSJkCUqa2B7JruCRRhzRgKoMkaWggXa9bzvpAvTwnpk9cbfaAWvKf4XrqiAMyjcG+a3mMXyc3/AgXAt3
+            YbN704XE5Rvjx3cs3AR6mvvUpElcqNPC2JCj97RTmKWOIqAZanBKu0VYOpV2z7Geis9Og5QnIqtghn9d8+FU70s4BlCYKbt3ZceBJzHv4VoaKAaJPDdSv4nK
+            sQ7X252cZd+4sKYqK/njdUnqtQlFolG5lU4dNCWKNxnh4cMIlmy7ndIjzLYVUjQHTqdrxkcObquIbN3b2T4R6DeyBzf/kVdxgY60/ck9WsjF1lS+uz7Ua7sM
+            V4TEZ/lFxng6ejzIIZf8mJ8t5pRlGbqbu0fhppdNzjskLHY8/3jdX+IOPz7tkDyGJwrYZULdmRxqKNZ74h3zS56zub2PcohOPvT6HdshwR7rgBhEX4cx7BPV
+            QffwWiYfTXfH7ElUPAPj+UwO3ThNt7nvXOVafhHeI9Sd4zM2BejYLb2qTshhhfzRMxe26Bjh3OkxhwoxMD9iLjDLMI4OHRTfLGT7172KfXNX5+je1wmgkHq6
+            9A35RfI+y9173YzwHVPBAJM4vPJY2Knw2r+UaO1KkVnXbZBuMtWZ3O6+wSwTYNABgPSeWMAjDqpYTTo6plQ0NjB9zjcvwIYPy/6YL68Nm8MA6Lcm6NE6Opwl
+            6sDgZ24lxd0jCDeDT+P46Jhvb8Lk5tslZI46Zn6FcxZ/FNKXOJpv52DTcaMtltna67DaS8oEcoI+klSJmEaXJzBF7wvNyc7hOAphunY4PIHX2JsAs3qOQdJl
+            kQWfopnAslUkO1U8dmIK6my5Qv8eK2y1UFw5KkiKUyJzVeQNJHOuMbuBXtWHGQbUAEhs4h2wq2NZ2+d+yLEkRejTBXGkHYXYUI8HCM7LPhUic0I9mW/UIxd2
+            WY3rWDBwD6n2QMIoV7cE46bb71vieUU4pa3eWjFOKys+HtwmUdRF2+TPtUgOqcevm81tD8i1axLuClAww+g17tm/TyTvToK4Tf1dVfAieO1npJMCBdvfUvPj
+            xjOii2ymA3VuNGa/DQfMQyssmOMPf/lAABmwxnTO0bYwfNQzKkItmcY3qsw4GbAP4AN9WCYX47uTGRUr2LZYrZM53fEgVe4mwdZpQxDbGlfaIl1AOs8pLTT1
+            PtOjxYy68c8jMOvHXbhW6x2X5lqxYn9dsBt1572StZkrKMfA+TdbH/ahNwd00aMUrzDa9zko0fcRzs9HYId4OXxKiSZlLT85ke6UYcNXp4o+GmclhgF+m4NO
+            cRsF7IzOtIfbUEobwET0b6A0gzN2C+LJpJk1zZtVQ1KSa1WOpzAqs1uEjE/pRwfHXqS41qqcmQGj22D6G4ZTtyE5C6s/DxNs8kfnn0clm+xj5zZDbs8G48XN
+            j+rZmkvwy6rWnhp5sPQyKiqvAufBcr50FolPFj0rmnSDxV8C2wQl9tlbHfx8TmoI+oWfyCZP5TfbDKEHU2UQl6NW+joNhK98LkT8P1+rzay2wOK3N1I+4sJd
+            lS/moqttSW9XCifBO+jCndmxdTyGOAUFCFNuJDhKgwQk1Rd4fkgQPWQEAt/jElULjPUVkCtJ/qrpVvMCgrvAH7LGkKkuSZu1QBH8tiAhP0scKwEbmtzODyrZ
+            oneWRZ9u6G/m0s+kPDD0T5hV+R6HbY2GYTSaWe2xMhhdFypFpO0T9zpm7swLE71xOSQVkbJXqiYw2amVCezJwrDUahqbJ/j5IfJoMnjbDFbrlry6fIUfa2V5
+            uzYfeq2unCadNWIK2NFGTIwfLGr+n2uHaYQ8+eXHA7N2gqsra/NjgEx3HO+jv+L9BmEa6cvU+f49pOF7sFu4ab6Q3bitE3+e15aeJWk7sRsonNTycP+m3Me7
+            JkDGulGFHohgedIE70S5EsJnaIQ0hEh1s2dKt2GEOqzSBjkhL3RtTkikzsU0LwjrQCnHp9VkQQVeTQfNS+1ef0zlgJHpp6Nd+50EEFJYGHO2WAOFr9EFRPAg
+            z3/wzTGTtRN7v3XWdkkw5qYXflboFGgyG2NJDBYkc6gOaelWBhWk3Wv7+I+oz+s9eu90dLSIwTwebiTnTxq/n/8iVopH1vlGBJKasyuZGdZiKJ3DtLmITXRo
+            87vA3Ag969Cd7h/vz2TSPyTmlgF1FZi62D8nje20SSbJDF/0Pp7jJN+W6yYnUrPzeMX//oKjuZQ3G1TVu7RBh0qWXLWqnSTUqSKJdbS3JdAUDHOah1v1dqms
+            lL9atL2lrsaB8LgnXNTdkmMeLKZoFFumhuJXEKX6uZ5blMa9Ofi7RumrOISU62sImiVB6erCFtYeQcLSTe5BetagQHAOBubZJdTBUgeNNk1J1c1NeTCfB2rz
+            5YwxKpO9hwv8xunDXJLkIyK0lUpxEuwX0HKw2Ip/XKAzEaL80Zy7a109asaCd0Unmvx3SQOtfOIgVxX5w2MFrg20SoxuArQq27I4l+/rL1tCc2/GmvLMSxNL
+            g3ipiFHjodVcynRJEETXafwZi0ei7dJCWPO3XQR5mcZNKRnOBU+ecVSbAj8bQlaC2FBR7YLT4RHnTr5aKEHEQK5lNZkBw8KWt581mzCSxy0DWa7j6Va+gkEt
+            AYiizFva9e4dEswax26ISsl65xcf4e/NxVVZ08y3C9Rsj6SxOMFxhOUEwuOrr+QneHY1+L4lGgM7tymQSuSZO2vI1ORHEnKawQW3Nyjaql4Nf/Z4QIrl4GN3
+            WdYy4d70D6AXutLVwx+b9F8zKpsLqXkpGIYcycGVGM8+O5rsdh5wsgxM70KMAbAN3yJ/lEQJ9lPImVtBEtQz+WQHQayS5ze+Fjd/WmYc/VwtvABRl4bcvGlp
+            ZDXUJLUSjKThuHgr4ej1jAsa9RnUoIxqG9tt5BsHNwr2y8phCGEBc1d8G4ij0UYMlI/DO2CcmiQarQ+FFM00uPUJbmMs98YZyH1vpdUBdyTLxRAosbJPKs7d
+            T5qeM+tXlN00HREnLyLi78osEabrZDy4GSbBdCmQRJW8dF5ZPzJ/tPLk8hZQtqLn4M3FquA7vm2x09UwFzOdaVgY0gxavdxn3vaM7HISEQLjBa4xLgPUOX2G
+            t0/ROIKncLtOFVgPhJbsSuemZ3ySRGXabde58yu2MrAK92NOMHdDlgDcpiG3HtBOJykdT3PqodaRhLYqLF9nBWOvxHouzYOeXS5clerG5TTo/cTcdKBEXO8N
+            Mjdt79oA62R3Ao+sRSyshvrQGICePxyu0l2z8cfv5n9rEnivRh+xVSmLwU8AgqhxW3dXrbgs8RyerxvUkRu7h0Lr5EU6PudREq7ggY4mUnho9IWlUeHHn8qo
+            r3BUiepZdzsBUtwvxgr5wPaFwoLZnXrk9JWjDrXHweAVV0OtGsMILBRJccAg1Ts+bBHHuZzOgUESYfuoyO3Sitvw4lmz4UTi97eOQCJRM756dQtW87xO7CzZ
+            4+UKMeUvBW3BkzD31R4p9LFcfrj68EplK3BFSkp/qW9dQ78rQPN6B9FI6D0Fjz55DkhVNK1SqCqt8fdSIg02/9aA4MmEBsjRkWGmCPMOaNgrx6COL5XptFaV
+            detQjXk5S3yKUPEunDUnnvIWiQn3KYg4FVoOORhk8EFE6U4rt/mSeDW/8xVvc9ZtWn6lshvq2of9q0/SUezzE9xAO1gQH4/fOpoOnu5eAGeN2M/9GjkEgGjM
+            oDvw6QWIFDjCw332X6OQkYB2oqZY3tDpavub+anbKiZ/UAOX1+VoqGZssAMCLxdGnmJ2a0RlaCf2e5ikRhAsALIWrGIkGuQhnjny5X+mKm5QTuuimkhyxaa7
+            tMpejaVW/a2w6Tv9Ftq9rvC28bOMAOV80wiOAubmh+c7qCVlnfu+4IgBUYXRhe9z5eV+1Cx1lma7oz/Y+PHIvjHBJTNBIFdLQSsxM36KTn9+GuAh3cwnwx7i
+            R+AKQVdj6nT09/91kB4Zvs93O8Gvn7/TgjfhmNuyw+6aJ7oDMHarffzuiw5xaRhCRvP4UpRQfhIztUYGq20C1qyQ2KldY+97SyNBfjou81UNUnXkAr06ifWP
+            5FkAgdUxeLojZupKoiFUwm+C6/yeXqhvj5KtfjfS0QxZdbU8hGcjWsUsA/o/JvJMmuRq51JxE7SJhZd5+Z3iZjAFcQ1TlGyi4UU9RnIbtVEFiaURatOyKrkD
+            F4eiridadMWDBJJzbb5pp5qHY1np3TNEeM3qRvKDfjf6vgTPdAxXSGqEaAin9qLr9C8L34SiejM76rAWV64glSYwULtXjlWQFCd+V+LVpPS07CM2Usb0nXca
+            tu7zXH1kJL5TnCmHc7J0M7/0RegkvLG80F1947lGkx94EZjGNsWmipQhX/wm4LfCvOlX6W8Q8ENSyS/BWp44OjhNSPsliZdrnHIqoQC75znSGOvS9fKLympO
+            PnpucfUcZ21V5EKqe23jIxl2PQ017QRPei5tABPxF94TOhbRF4S6TaMPvW/pJGm+w3SM+zGRK41Pf9/71MWuVPT31zHggGOxF4PSCSJw9hWMR5kpT2p+I6Uc
+            OuxYniW2rvWQT7Qcy3ntBfWtpB5fV92laXC7wm8pnWcsdf19OIUwBqcve1K7MWJwOPt2dCagSB2DP2sjCOx4Cx6GTWy1PB0x/InRSS7X1RD4575wQESyPowH
+            fAQgqbYBLxKO1lmkPixPizXxDdJ3rzzVkXC26xGUWbKNf9fZ1IX1KrOjbVuLWsSC4rN62fRFoQY4p4HsqFeN9jef/fKtVHNf5JhX/+rF3XEeYZp1+0iLZaUL
+            bG7CNGoEZWLNjKQhIpOUaxgk3n40/4VjVBJ1JD7GDwypSJT9JXmUP9bxp9ytfrjp5XMb+ub6CyH78jcdW09yzQUE3dse85b50Ri5jguvymEloEHVBntDULYU
+            hcRge3IAcZ54XrUlA6aNKKY7bQhsR4cu7ME+HEr9EprjdFKDYY5XimiGbajiTm0UaZw97ZMjkG1eDAHMJXCZq/O159QIlW84gCVEh9gyWKN6kznN0WRDzA3L
+            GJn+NeiNfSkVcvj9cu+FCDzSVx93EhCZv5zPqBSehrke53GvnZpVUL4EnZV9bOh6g0619meQfg26L04tA/P3fvFhb8svT82lKrzndR7Ftb7PUwE6BHT67NSM
+            SQuR2jEHgYgt/QKNGwn8os6+fTnCiMv0J7zmKvNa/+uBnFkiFGHxfDWZlIJv5ucglKv61gOu12VjYvsCXFatkVNnZvcQKr3cE8KG544X0kmEhjh619GR4GPx
+            /DBd+ffpQQiMc2zCyeK/6odrG3bTNWeo74Ptw7QIfTqUZBZ3nJr++bB9tPXkprh6owe/nn3jBYYWGyREezu99D3wjE5YI19qX8zb+kYezroCAVgrxVZQE1wU
+            Jv1x9BgCNwMU/MolOD8E/dXtou8w9Yf2HIhoP90YhY2G8ggzhAyLZyLzu8DHuodehZIUcsHGBrkd+Spj8VdzlDDDoInn199uVvCq9PM480K9TK21eNTuDzc+
+            0vxsdX4Br3wznp7ShQt6pTLU512qJF130XlfiX3gw9ugHKFtGClYXErpAY+IUn4zrCjjUXlIejfGb961UJ92JRGKnSi7ybLiiP3Xaplvjlfe6rhP9UlyaNVQ
+            2kqNmJ5bpLxBAcW6r5G2Xke9t6pAoQ8dgX2RROdShVsHGo03oaiAlHM/XbDCq9rnaR9JkkTmLVK++6yrzo2SXj2Jo6K+5Z0u/6PDJQVI4haOuieMM1GYtdx8
+            cWJSZi+1iLSJgEUz3deq8WhHqyhxNhZrIAGXP8l0lHOAzAoSLhd6YddHE8782t6By6NlrC8icvAD8Mo6m9roCfWJ7aiPGrETfIHrO05ownyDYknKTWkQl0Gg
+            DanHC3LFMSefXRmTDLJTWACG3z5o4amj3i/rNnzhnzpvM+CKQdCzYKCDxvgubX92POo52GMW7zznNqBvQlmZMS7IzbYwFr34myV0DxiLeG/M834A21T+B9c0
+            bm1J23BKtmtEgdud0l+k0sy0YdxXnflrqHPK3SFKNB8LRabxXSu0Pqtsi/FJiZyzD8dSRKTEzQ/hztDDXgIJjU0wFL4wJV0Pxqj+1piPQddTrnhsenXE617I
+            eVlx3PS/a2K2gfJuuSpfCKviPeG7mtI7uvuppM1IdWUboTz7jgOxx4Js/6H12sOtv+oS2wvHgui5IfEshTbGHko0EsWdOwsFehKPbwtmeflU9SO4tpF2kdFj
+            XaRkF8cIfRpF5oqbQy1iZU2QWlcFmFecx193fk95/0JB2En05SdabZHr4OpASDtsnlPyy/ebFD0vmsTnyzIv3Yuvt2Mih2nSYIYzaKGeRl0+O1izsXS+IGfu
+            ITnQlacFzpGQYF+5n+R9bsD1jIchBaDQip/B91XkGO5G9NwXHjA1SNuxFX1cNsdcOyNVnTV1ZuGtPrCVB+Ap+MTabIzxZoGc7cNsOqLi2bhZUdXfqEyVxujX
+            1arod/CnfpGGcq/xw+Rq/2v9nphF2SJ2H6FJMO7G479ekU7TwiRMSdD6KHDSNnSBsACsw8hYOxOKxYv4P3QrovxqHAAA
         shell: bash
         run: |
           set -euo pipefail
-          if ! grep -q 'INOU v0.5.1 ONE-SCREEN COMBAT' pages/_index.module.css; then
-            printf '%s' 'H4sIAAAAAAAC/7VYXW/bNhR996/gChiwC9OVbEtxHKxYUwTdgC4BugwYMOyBkiiLmCQKFGM7LfLfxy/ZkizbVNq92DJN3o/Dw3N5NXj3Fvx2//An2DhTb+qCh/s7+MfHL3d39+Djw++3Hx7B23eDhGfpKkHlaLoheFtQxv+OEEewEGP45zchzQLE3/wzngwCGj3bzATfBgDQDWZxSrcrkJAowvmNGStDRtMUBjhBG0LZCuQ0xzeDl8F5o8pmQUvCCc1XICY7HEmTJC8xXwFHPm9JxJMVcB1nKH8mmKwTrn5Hm0SOZCSH1ahakaEdPJ5WoCgi+drM+dGJTMsEp6nK53TAQ5twh7VgYUA5p9mZmAPKIswgQxF5Ks28iJRFip5XYM2IglN+Q44zMcoxZHQrZi4WxQ4sluJDBCRCGAnXxW4C3JiNqyFnAryr4dgmfU6LADGVf5WL9NCZ8GEngDuTcy6b10+PtGh6WF7y4In8rH0kqOCYPaI1KAuUr2LCSg7DhKQR+AZimnNYkq9YbJIrDIL+BlN0wp4ECqQkxwceTGdWHtTTB8YvEQ/8RDJpB+W8E7BjavVxPi3EwaG5CqJiLHR9vTmcobyMKRNj6lFy8K8R9JzhGJQhSvFo6nvjVoD7RZAysiZCG0KcCyyN+R7hpdigIxi6Alc6phTHInPDnj1Z5IkwQdd2Z2nHHpzj7PkzCnDagME4ZBrrLo9Xve2XnNF83eLQ3JKT6umWIhY1jtJJdeoSnb3AxCnWcIlvGBGGQy3kIU2fsryR6rU5iVLuRkupNDjfjEoUY4gYRlBJvtG7cZMOl7MSXzzFv2IkfU1sp5OcX55b0C1m95STEAvE95nLslAP0gL6mOJbxC57TDCjt0ZLJbBSJx2AnjjV1YKJ8wBr/OqJlQ4DvBe5bOoaZx/Y0VIdao2MjtHlZqyWOmwCDOwDCl53FoyjaYaFsth70/OFy+qc+M09AFaHma2fv9Dt2U3WYy3rzfrpqArX/PtoI/rE816Vqhaenh2e4jwJkT6VUl1Y2uWodgPyDHe6dKdR1pedHPPPwuEa+W+VWs8GI5OdgadlYt4Dny75vrZDWAvXZ7ouWyjPDWpVRPL3uZp/ZgPaymazF9f1veimbY/kVJWb9AGj+E5prptqXNPqxS5IafhvC5ltQsSNWnAixNLxlqHiFGAc7zg8/CG6BVKUpLSjqNeA1wZNpErxJ3HzP3EgW7dFc47ULama0uwbdFEXrQPDBUZ8NJvU+gTZNozVGlS8pirpcG953riVhCnKipGnGpOl6OMmwBf4jHswe09TX9O09feJDGezQ19kkju7ULdUruym3GMF0mahQsb/DmTKjVSNat+k/h2ub0s7ATkYC7pahjoRZ5qIP4LhvZLMkOyjXyGOsYTiYYP1zamLz+1D8GJR89Oi9ZICBaXYT45vqp5i4debiuruw6p7tf75VVxwI+ndnR01/aIJCkeqS4PAF/PHdYDh82of7S8ZjggCo/pi/1quUDHav6I48UpAFo3F/ED9a7/jjYDvDFWALxYeq7cCh47d0Xt5eWmt4z+snvdb3e5NrZpRb94+6/YOD31Vh/JI/LxejY+d65p07pHy3KM7aTd9vLk1feqXj7PV9n/dnsXsNRhVV9PGuZt7tnTqgnjhdUD8H83fz3ScFQAA' | base64 -d | gzip -d >> pages/_index.module.css
-          fi
-          npm pkg set version=0.5.1
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64,gzip,hashlib,os
+          data=gzip.decompress(base64.b64decode(os.environ['IMAGE']))
+          assert hashlib.sha256(data).hexdigest()=='6036c7f6fc51a7c68fe8f57c926d3565d458701bb100d01bd5031562f3683796'
+          Path('pages/character-portraits.avif').write_bytes(data)
+          from pathlib import Path
+          import hashlib
+          assert hashlib.sha256(Path("pages/character-portraits.avif").read_bytes()).hexdigest()=="6036c7f6fc51a7c68fe8f57c926d3565d458701bb100d01bd5031562f3683796", "Illustration integrity verification failed"
+          css=Path("pages/_index.module.css")
+          content=css.read_text(encoding="utf-8")
+          if "INOU v0.6.0 CHARACTER ART" not in content:
+              content+="""
+          /* INOU v0.6.0 CHARACTER ART: drawn portraits from approved character sheet */
+          .person{isolation:isolate}
+          .person > div{display:none!important}
+          .person::before{content:"";position:absolute;left:0;top:0;width:220px;height:300px;z-index:2;background-image:url("./character-portraits.avif");background-size:220px 1800px;background-repeat:no-repeat;background-position:0 0;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 67%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 67%,transparent 100%);filter:drop-shadow(0 12px 26px #020b1ccc)}
+          .person_hero::before{background-position:0 0}
+          .person_aoi::before{background-position:0 -300px}
+          .person_hunter::before{background-position:0 -600px}
+          .person_kai::before{background-position:0 -900px}
+          .person_cleaner::before{background-position:0 -1200px}
+          .person_observer::before{background-position:0 -1500px}
+          """
+              css.write_text(content,encoding="utf-8")
+          for name in ("pages/_index.tsx","helpers/GameData.tsx"):
+              p=Path(name)
+              txt=p.read_text(encoding="utf-8")
+              assert "異能コード" in txt or "固有異能" in txt or "固有コード" in txt, f"Unexpected source file: {name}"
+              txt=txt.replace("固有異能","固有コード")
+              txt=txt.replace("固有能力","固有コード")
+              txt=txt.replace("異能発動","コード発動")
+              txt=txt.replace("異能反応","コード反応")
+              txt=txt.replace("記録外の異能","記録外のコード")
+              txt=txt.replace("敵の異能の残響","敵のコードの残響")
+              txt=txt.replace("異能をタップ","コードをタップ")
+              txt=txt.replace("観測された異能を記録","観測されたコードを記録")
+              txt=txt.replace("CODE 13 // ABILITY AWAKENED","CODE AWAKENED")
+              txt=txt.replace("固有コードの発現を確認","固有コードの覚醒を確認")
+              txt=txt.replace("能力者","コード保持者")
+              p.write_text(txt,encoding="utf-8")
+          print("Six character portraits installed and CODE terminology unified")
+          PY
+          npm pkg set version=0.6.0
           npm install --package-lock-only --no-audit --no-fund
-      - name: Build and typecheck
+      - name: Build
         run: |
           npm ci --no-audit --no-fund
           npm run build
-      - name: Commit game update
+      - name: Commit
         shell: bash
         run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add pages/_index.module.css package.json package-lock.json
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add pages/character-portraits.avif pages/_index.tsx pages/_index.module.css helpers/GameData.tsx package.json package-lock.json
           if ! git diff --cached --quiet; then
-            git commit -m 'One-screen battle layout v0.5.1'
+            git commit -m 'Character art and CODE v0.6.0'
             git push origin HEAD:main
           fi
       - uses: actions/configure-pages@v5
