@@ -34,3 +34,9 @@ GitHub Pages は静的サイトの公開用です。オンライン対戦やサ�
 - 診断/能力覚醒/物語/戦闘/章間/結果/図鑑を同じUI体系に統一。
 - 図鑑の能力カードをタップで展開可能。
 - Mobile viewport + safe area最適化、キーボードフォーカスとアクセシビリティ強化。
+
+## v0.4.0 | Dramatic typography & storytelling
+- Bold modern-Japanese title and chapter typography
+- Ability-awakening rank pill, power title, skill detail panel and layered effects
+- SYSTEM messages now distinguish data labels and values from dialogue
+- Character portrait code and game mechanics are unchanged

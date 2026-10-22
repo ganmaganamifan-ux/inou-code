@@ -18,6 +18,22 @@ function ChapterTag({ chapter }: { chapter: number }) {
   return <div className={styles.chapterTag}><span>EPISODE {String(chapter).padStart(2,'0')}</span><span className={styles.tagSlash}>/</span><span>{GameData.chapterNames[chapter]}</span></div>;
 }
 
+
+function StoryText({text, system}: {text:string; system:boolean}) {
+  const lines=text.split('\n');
+  return <>
+    {lines.map((line,i)=>{
+      if(system){
+        const field=line.match(/^(固有異能|適合タイプ)[：:]\s*(.*)$/);
+        if(field) return <span key={i} className={styles.systemDataRow}><span>{field[1]}</span><strong>{field[2]}</strong></span>;
+        if(line.startsWith('警告')) return <span key={i} className={styles.systemWarningLine}>{line}</span>;
+        return <span key={i} className={styles.systemTextLine}>{line||'\u00a0'}</span>;
+      }
+      return <React.Fragment key={i}><span className={styles.narrationLine}>{line}</span></React.Fragment>;
+    })}
+  </>;
+}
+
 function Person({ who, size = 'big' }: { who:string; size?: 'big'|'small' }) {
   if (who === 'SYSTEM') return null;
   return <div className={[styles.person,styles['person_' + who],size === 'small' ? styles.personSmall : ''].join(' ')} aria-hidden="true">
@@ -220,7 +236,7 @@ export default function IndexPage() {
             {saved&&<Button size="lg" variant="outline" onClick={()=>setPhase(completed?'finish':GameData.scenes.find(x=>x.id===sceneId)?.end?'interlude':'story')} className={styles.altButton}><Save size={17}/> 続きから再開 <ChevronRight size={17}/></Button>}
             <Button variant="ghost" onClick={showArchive} className={styles.ghostButton}><BookOpen size={16}/> 異能図鑑を見る （{archiveCount}種）</Button>
           </div>
-          <p className={styles.versionTag}>VISUAL EDITION v0.3.0 · CHAPTER 01–03 · OFFLINE SOLO</p>
+          <p className={styles.versionTag}>VISUAL EDITION v0.4.0 · CHAPTER 01–03 · OFFLINE SOLO</p>
         </div>
       </>}
 
@@ -234,14 +250,14 @@ export default function IndexPage() {
         <div className={styles.quizBottom}>診断はゲーム内のタイプ分類です。医療・心理学的判定ではありません。</div>
       </div>}
 
-      {phase==='reveal'&&<div className={styles.revealWrap}>
-        <div className={styles.microText}>SINGULARITY DETECTED  /  覚醒完了</div>
-        <div className={styles.revealArt} style={{'--power-color':picked.color} as React.CSSProperties}><div className={styles.revealSeal}/><div className={styles.revealOrbit}><Zap size={48} strokeWidth={1.2}/></div><div className={styles.revealCoordinates}>UNIQUE ID 13-{picked.kind}</div></div>
-        <div className={styles.revealRarity}>{picked.rarity} · INITIAL ABILITY</div>
+      {phase==='reveal'&&<div className={styles.revealWrap} style={{'--power-color':picked.color} as React.CSSProperties}>
+        <div className={styles.awakenHeadline}>CODE 13 // ABILITY AWAKENED</div><p className={styles.awakenSubline}>固有異能の発現を確認</p>
+        <div className={styles.revealArt}><div className={styles.revealPowerWords} aria-hidden="true">覚醒</div><div className={styles.revealSeal}/><div className={styles.revealOrbit}><Zap size={48} strokeWidth={1.2}/></div><div className={styles.revealCoordinates}>UNIQUE ID 13-{picked.kind}</div></div>
+        <div className={[styles.revealRarity,styles['rank'+picked.rarity]].join(' ')}><span className={styles.rankPill}>{picked.rarity}</span><span className={styles.rankCaption}>INITIAL ABILITY</span></div>
         <div className={styles.revealType}>あなたは ― <strong>{picked.name}</strong></div>
         <h1 className={styles.revealName}>{picked.ability}</h1>
         <div className={styles.revealDescription}>{picked.desc}</div>
-        <div className={styles.skillCard}><span>初期スキル</span><strong>{picked.skill}</strong><p>{picked.tip}</p></div>
+        <div className={styles.skillCard}><div className={styles.skillCardTop}><span><Zap size={14}/> 初期スキル</span><b>SKILL / 001</b></div><div className={styles.skillCardBody}><strong>{picked.skill}</strong><p>{picked.tip}</p><div className={styles.skillCardFoot}><Activity size={13}/> 戦闘で発動できる固有能力</div></div></div>
         <Button variant="outline" className={styles.copyButton} onClick={copyResult}><Copy size={15}/> 診断結果をコピーして共有</Button>
         {copyMessage&&<div className={styles.feedbackMessage} role="status"><Check size={14}/>{copyMessage}</div>}
         <p className={styles.revealDisclaimer}>※体験版ではタイプごとに能力を固定。レア度の抽選は未実装。</p>
@@ -252,10 +268,10 @@ export default function IndexPage() {
         <div className={styles.sceneHeader}><ChapterTag chapter={scene.ch}/><div className={styles.sceneProgress}><span>TRUST <strong>{String(trust).padStart(2,'0')}</strong></span><span>INTEL <strong>{String(intel).padStart(2,'0')}</strong></span></div></div>
         <div className={styles.chapterProgress}><div style={{width:chapterPercent+'%'}}/></div>
         <div className={styles.storyArtwork}><div key={sceneId} className={styles.storySceneTransition}><Landscape bg={scene.bg} portrait={scene.portrait}/></div><div className={styles.storyArtScan}><Crosshair size={13}/> SCENE {String(sceneNumber).padStart(2,'0')} / {String(sceneCount.length).padStart(2,'0')}</div></div>
-        <div key={scene.id+'-dialogue'} className={styles.dialogueArea}>
+        <div key={scene.id+'-dialogue'} className={[styles.dialogueArea,scene.speaker==='SYSTEM'?styles.systemDialogue:''].join(' ')}>
           <div className={styles.dialogueMeta}><span>TRANSMISSION LOG</span><span>SECTOR 13 // CH.{scene.ch}</span></div>
-          <div className={styles.speaker}><span className={styles.speakerSlash}>//</span>{scene.speaker==='SYSTEM'?'SYSTEM MESSAGE':scene.speaker}</div>
-          <p className={styles.dialogueText}>{displayText(scene.text)}</p>
+          <div className={styles.speaker}><span className={styles.speakerMarker}>{scene.speaker==='SYSTEM'?<RadioTower size={14}/>:<RadioTower size={14}/>}</span>{scene.speaker==='SYSTEM'?'SYSTEM MESSAGE':scene.speaker}</div>
+          <div className={styles.dialogueText}><StoryText text={displayText(scene.text)} system={scene.speaker==='SYSTEM'}/></div>
           {scene.choices?<div className={styles.storyChoices}><p className={styles.choicePrompt}><Sparkles size={13}/> あなたの選択が運命を変える</p>{scene.choices.map((choice,i)=><Button key={i} variant="outline" className={styles.storyChoice} onClick={()=>choose(choice)}><span className={styles.optionIndex}>{i+1}</span>{choice.label}<ChevronRight size={16}/></Button>)}</div>
           :scene.battle?<Button className={styles.battleStart} size="lg" onClick={startFight}><Swords size={18}/> 戦闘開始 <ChevronRight size={16}/></Button>
           :scene.end?<Button className={styles.mainButton} size="lg" onClick={chapterEnd}>{scene.ch===3?'体験版の結果を見る':'次の話へ進む'} <ChevronRight size={17}/></Button>
