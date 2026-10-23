@@ -965,52 +965,59 @@ body:has(.viewport[data-phase="combat"]) {
   .viewport[data-phase="combat"] .actionBtn { height: 45px !important; }
 }
 
-/* INOU v0.6.3 CRISP CANON CAST: original six faces, improved source quality and safe UI scale. */
-/* v0.6.2 made a 9 KB image extremely large: v0.6.3 keeps the artwork near native dimensions. */
+
+/* INOU v0.6.4 CANONICAL FULL BODY. 6 original designs with transparency. */
 .viewport .landscape .person {
-  position:absolute!important;left:50%!important;bottom:-5px!important;
-  width:auto!important;height:min(82%,275px)!important;
-  aspect-ratio:26/35!important;transform:translateX(-50%)!important;
-  transform-origin:bottom center!important;pointer-events:none;
-  filter:drop-shadow(0 12px 20px rgba(0,5,17,.62))!important;
+  position:absolute!important;left:50%!important;bottom:-4px!important;
+  width:auto!important;height:98%!important;aspect-ratio:3/4!important;
+  transform:translateX(-50%)!important;transform-origin:center bottom!important;
+  filter:drop-shadow(0 16px 17px rgba(0,6,18,.6))!important;
+  isolation:isolate;pointer-events:none;
 }
-.viewport .landscape .person > div {display:none!important}
+.viewport .landscape .person>div {display:none!important}
 .viewport .landscape .person::before {
-  content:""!important;display:block!important;position:absolute;
-  inset:0!important;width:100%!important;height:100%!important;
-  background:url("./character-canon-v063.webp") center var(--canon-row,0%)/100% 600% no-repeat!important;
-  -webkit-mask-image:radial-gradient(ellipse 71% 85% at 50% 49%,#000 0%,#000 66%,transparent 100%)!important;
-  mask-image:radial-gradient(ellipse 71% 85% at 50% 49%,#000 0%,#000 66%,transparent 100%)!important;
-  filter:none!important;background-color:transparent!important;
+  content:''!important;position:absolute!important;inset:0!important;
+  display:block!important;width:100%!important;height:100%!important;
+  background-color:transparent!important;
+  background-image:url('./character-fullbody-v064.avif')!important;
+  background-size:100% 600%!important;
+  background-repeat:no-repeat!important;
+  background-position:center var(--canon-row,0%)!important;
+  mask-image:none!important;-webkit-mask-image:none!important;
+  border:0!important;border-radius:0!important;filter:none!important;
 }
+/* Correct canonical mapping: hero / Akari / Rain / Ryuji / Shirou / Kaoru. */
 .viewport .person_hero{--canon-row:0%}
 .viewport .person_aoi{--canon-row:20%}
-.viewport .person_ryuji{--canon-row:40%}
-.viewport .person_cleaner{--canon-row:60%}
-.viewport .person_observer{--canon-row:80%}
-.viewport .person_kai,.viewport .person_rain{--canon-row:100%}
-/* The patrol Hound is a different enemy; keep its native vector/silhouette instead of human portraits. */
+.viewport .person_kai,.viewport .person_rain{--canon-row:40%}
+.viewport .person_ryuji{--canon-row:60%}
+.viewport .person_cleaner{--canon-row:80%}
+.viewport .person_observer{--canon-row:100%}
+/* Hound is a machine. Keep the game's existing CSS-rendered enemy model. */
 .viewport .landscape .person.person_hunter {
   width:220px!important;height:300px!important;bottom:-28px!important;
   transform:translateX(-50%) scale(.65)!important;
 }
 .viewport .landscape .person.person_hunter::before{content:none!important}
-.viewport .landscape .person.person_hunter > div{display:block!important}
-/* Title background stays visible; do not enlarge a 260px portrait into a full-screen blurry block. */
-.viewport[data-phase="title"] .titleArtwork .person {
-  left:62%!important;height:min(88%,310px)!important;bottom:-7px!important;
+.viewport .landscape .person.person_hunter>div{display:block!important}
+/* Full body in title. Do not crop away the torso below a disembodied head. */
+.viewport[data-phase='title'] .titleArtwork .person {
+  left:64%!important;height:94%!important;bottom:-4px!important;
 }
-/* Scenes: the native character drawing is an overlay, never an opaque rectangular image. */
-.viewport[data-phase="story"] .storyArtwork .person {
-  left:50%!important;height:min(85%,278px)!important;bottom:-5px!important;
+/* Story: frame from head to waist with natural crop *below* the torso at panel boundary. */
+.viewport[data-phase='story'] .storyArtwork .person {
+  left:50%!important;height:121%!important;bottom:-21%!important;
 }
-/* Combat: the one-screen HUD and slash/ability effects continue to work. */
-.viewport[data-phase="combat"] .combatArt .person {
-  height:min(84%,225px)!important;bottom:0!important;left:50%!important;
+/* Compact combat keeps the original one-screen HUD and FX fully touchable. */
+.viewport[data-phase='combat'] .combatArt .person {
+  left:50%!important;height:134%!important;bottom:-34%!important;
 }
-.viewport[data-phase="combat"] .combatArt .person.person_hunter {
-  height:300px!important;bottom:-15px!important;transform:translateX(-50%) scale(.58)!important;
+.viewport[data-phase='combat'] .combatArt .person.person_hunter {
+  height:300px!important;bottom:-15px!important;
+  transform:translateX(-50%) scale(.58)!important;
 }
 @media(max-height:690px){
-  .viewport[data-phase="combat"] .combatArt .person.person_hunter{transform:translateX(-50%) scale(.50)!important}
+  .viewport[data-phase='combat'] .combatArt .person.person_hunter {
+    transform:translateX(-50%) scale(.50)!important;
+  }
 }
