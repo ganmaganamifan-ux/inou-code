@@ -1,4 +1,4 @@
-name: Inou Code v0.6.1 HD Character Art
+name: Inou Code v0.6.2 Canonical Cast
 on:
   push:
     branches: [main]
@@ -11,7 +11,7 @@ concurrency:
   group: github-pages
   cancel-in-progress: false
 jobs:
-  publish:
+  deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -21,15 +21,15 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Download checked character update
+      - name: Fetch verified six-character update
         shell: bash
         run: |
           set -euo pipefail
           curl --fail --location --retry 3 --max-time 120 \
-            'https://inou-code-release-storage-1ir5ld.v2.appdeploy.ai/install-v061.yml' \
-            -o /tmp/inou-v061.yml
-          echo '6883fdde85d2c629ab5efb609b1139b152827c9461131c3ac5672574ca63b79a  /tmp/inou-v061.yml' | sha256sum -c -
-      - name: Install transparent portraits
+            'https://inou-code-release-storage-1ir5ld.v2.appdeploy.ai/install-v062.yml' \
+            -o /tmp/inou-v062.yml
+          echo '184d6a3cc76cb22f52d173a750c1a82b4535135411336bd372d65cc8cfffa846  /tmp/inou-v062.yml' | sha256sum -c -
+      - name: Install original character cast
         shell: bash
         run: |
           set -euo pipefail
@@ -38,26 +38,27 @@ jobs:
           import os, subprocess
           from pathlib import Path
           import yaml
-          release=yaml.safe_load(Path('/tmp/inou-v061.yml').read_text())
-          installer=release['jobs']['publish']['steps'][2]
-          assert installer['name']=='Install transparent character portraits'
-          env=os.environ.copy()
+          release = yaml.safe_load(Path('/tmp/inou-v062.yml').read_text(encoding='utf-8'))
+          steps = release['jobs']['deploy']['steps']
+          installer = next(s for s in steps if s.get('name') == 'Install original six characters')
+          env = os.environ.copy()
           env.update(installer['env'])
-          subprocess.run(['bash','-e','-o','pipefail','-c',installer['run']],env=env,check=True)
+          subprocess.run(['bash','-e','-o','pipefail','-c',installer['run']], env=env,check=True)
           PY
-      - name: Build
+      - name: Build and check
+        shell: bash
         run: |
           npm ci --no-audit --no-fund
           npm run build
-      - name: Commit update
+      - name: Commit game update
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add pages/character-portraits-v061.avif pages/_index.module.css pages/_index.tsx package.json package-lock.json
+          git add pages/character-canon-v062.avif pages/_index.module.css pages/_index.tsx helpers/GameData.tsx package.json package-lock.json
           if ! git diff --cached --quiet; then
-            git commit -m 'Layered HD character portraits v0.6.1'
+            git commit -m 'Restore original six character designs v0.6.2'
             git push origin HEAD:main
           fi
       - uses: actions/configure-pages@v5
