@@ -239,7 +239,7 @@ export default function IndexPage() {
             {saved&&<Button size="lg" variant="outline" onClick={()=>setPhase(completed?'finish':GameData.scenes.find(x=>x.id===sceneId)?.end?'interlude':'story')} className={styles.altButton}><Save size={17}/> 続きから再開 <ChevronRight size={17}/></Button>}
             <Button variant="ghost" onClick={showArchive} className={styles.ghostButton}><BookOpen size={16}/> 異能図鑑を見る （{archiveCount}種）</Button>
           </div>
-          <p className={styles.versionTag}>VISUAL EDITION v0.6.1 · CHAPTER 01–03 · OFFLINE SOLO</p>
+          <p className={styles.versionTag}>VISUAL EDITION v0.6.2 · CHAPTER 01–03 · OFFLINE SOLO</p>
         </div>
       </>}
 
