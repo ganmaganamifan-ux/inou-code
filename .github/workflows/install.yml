@@ -1,4 +1,4 @@
-name: Inou Code v0.6.2 Canonical Cast
+name: Inou Code v0.6.2 Cast Fix
 on:
   push:
     branches: [main]
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-      - name: Fetch verified six-character update
+      - name: Download verified original cast
         shell: bash
         run: |
           set -euo pipefail
@@ -29,7 +29,7 @@ jobs:
             'https://inou-code-release-storage-1ir5ld.v2.appdeploy.ai/install-v062.yml' \
             -o /tmp/inou-v062.yml
           echo '184d6a3cc76cb22f52d173a750c1a82b4535135411336bd372d65cc8cfffa846  /tmp/inou-v062.yml' | sha256sum -c -
-      - name: Install original character cast
+      - name: Install original character sprites
         shell: bash
         run: |
           set -euo pipefail
@@ -39,18 +39,18 @@ jobs:
           from pathlib import Path
           import yaml
           release = yaml.safe_load(Path('/tmp/inou-v062.yml').read_text(encoding='utf-8'))
-          steps = release['jobs']['deploy']['steps']
-          installer = next(s for s in steps if s.get('name') == 'Install original six characters')
+          installer = next(s for s in release['jobs']['deploy']['steps'] if s.get('name') == 'Install original six characters')
           env = os.environ.copy()
           env.update(installer['env'])
-          subprocess.run(['bash','-e','-o','pipefail','-c',installer['run']], env=env,check=True)
+          assert 'ART' in env and 'PATCH' in env, 'Missing release data'
+          env['INOU_CANON_SPRITE'] = env['ART']
+          subprocess.run(['bash', '-e', '-o', 'pipefail', '-c', installer['run']], env=env, check=True)
           PY
-      - name: Build and check
-        shell: bash
+      - name: Build and test
         run: |
           npm ci --no-audit --no-fund
           npm run build
-      - name: Commit game update
+      - name: Commit installed artwork
         shell: bash
         run: |
           set -euo pipefail
@@ -58,7 +58,7 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add pages/character-canon-v062.avif pages/_index.module.css pages/_index.tsx helpers/GameData.tsx package.json package-lock.json
           if ! git diff --cached --quiet; then
-            git commit -m 'Restore original six character designs v0.6.2'
+            git commit -m 'Restore original cast v0.6.2'
             git push origin HEAD:main
           fi
       - uses: actions/configure-pages@v5
