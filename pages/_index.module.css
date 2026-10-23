@@ -965,58 +965,52 @@ body:has(.viewport[data-phase="combat"]) {
   .viewport[data-phase="combat"] .actionBtn { height: 45px !important; }
 }
 
-/* INOU v0.6.0 CHARACTER ART: drawn portraits from approved character sheet */
-.person{isolation:isolate}
-.person > div{display:none!important}
-.person::before{content:"";position:absolute;left:0;top:0;width:220px;height:300px;z-index:2;background-image:url("./character-portraits.avif");background-size:220px 1800px;background-repeat:no-repeat;background-position:0 0;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 67%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 67%,transparent 100%);filter:drop-shadow(0 12px 26px #020b1ccc)}
-.person_hero::before{background-position:0 0}
-.person_aoi::before{background-position:0 -300px}
-.person_hunter::before{background-position:0 -600px}
-.person_kai::before{background-position:0 -900px}
-.person_cleaner::before{background-position:0 -1200px}
-.person_observer::before{background-position:0 -1500px}
-
-/* INOU v0.6.2 ORIGINAL CANON CAST — source: original user-approved six-person reference */
-/* Transparent WebP portrait sprite, six 260x350 frames in one file. */
-.viewport .landscape .person{
-  position:absolute!important;left:50%;bottom:-3px!important;
-  width:auto!important;height:min(101%,410px)!important;
+/* INOU v0.6.3 CRISP CANON CAST: original six faces, improved source quality and safe UI scale. */
+/* v0.6.2 made a 9 KB image extremely large: v0.6.3 keeps the artwork near native dimensions. */
+.viewport .landscape .person {
+  position:absolute!important;left:50%!important;bottom:-5px!important;
+  width:auto!important;height:min(82%,275px)!important;
   aspect-ratio:26/35!important;transform:translateX(-50%)!important;
-  transform-origin:bottom center!important;
-  filter:drop-shadow(0 9px 18px rgba(0,6,18,.55))!important;
-  isolation:isolate;pointer-events:none;
+  transform-origin:bottom center!important;pointer-events:none;
+  filter:drop-shadow(0 12px 20px rgba(0,5,17,.62))!important;
 }
-.viewport .landscape .person::before{
-  content:""!important;display:block!important;
-  position:absolute;inset:0!important;width:100%!important;height:100%!important;
-  background-image:url('./character-canon-v062.avif')!important;
-  background-repeat:no-repeat!important;
-  background-size:100% 600%!important;
-  background-position:center var(--canon-row,0%)!important;
-  background-color:transparent!important;
-  -webkit-mask-image:none!important;mask-image:none!important;
-  filter:none!important;z-index:2;
+.viewport .landscape .person > div {display:none!important}
+.viewport .landscape .person::before {
+  content:""!important;display:block!important;position:absolute;
+  inset:0!important;width:100%!important;height:100%!important;
+  background:url("./character-canon-v063.webp") center var(--canon-row,0%)/100% 600% no-repeat!important;
+  -webkit-mask-image:radial-gradient(ellipse 71% 85% at 50% 49%,#000 0%,#000 66%,transparent 100%)!important;
+  mask-image:radial-gradient(ellipse 71% 85% at 50% 49%,#000 0%,#000 66%,transparent 100%)!important;
+  filter:none!important;background-color:transparent!important;
 }
-/* Frame mapping: hero black hair, heroine blond, Ryuji muscular,
-   Shiro silver hair, Kaoru glasses, Rain purple-hooded hacker. */
 .viewport .person_hero{--canon-row:0%}
 .viewport .person_aoi{--canon-row:20%}
 .viewport .person_ryuji{--canon-row:40%}
 .viewport .person_cleaner{--canon-row:60%}
 .viewport .person_observer{--canon-row:80%}
-.viewport .person_kai{--canon-row:100%}
-.viewport .person_rain{--canon-row:100%}
-.viewport .landscape .person > div{display:none!important}
-/* The Hound patrol robot is a separate enemy: never replace it with Ryuji. */
-.viewport .landscape .person.person_hunter{width:220px!important;height:300px!important;bottom:-28px!important}
+.viewport .person_kai,.viewport .person_rain{--canon-row:100%}
+/* The patrol Hound is a different enemy; keep its native vector/silhouette instead of human portraits. */
+.viewport .landscape .person.person_hunter {
+  width:220px!important;height:300px!important;bottom:-28px!important;
+  transform:translateX(-50%) scale(.65)!important;
+}
 .viewport .landscape .person.person_hunter::before{content:none!important}
-.viewport .person_hunter > div{display:block!important}
-/* Tall story art with cinematic framing; dialog remains unobstructed. */
-.viewport[data-phase="title"] .titleArtwork .person{height:min(102%,435px)!important;left:59%!important;bottom:-6px!important}
-.viewport[data-phase="story"] .storyArtwork .person{height:min(98%,410px)!important;left:50%!important;bottom:-6px!important}
-/* Combat: retain one-screen HUD and preserve existing slash / CODE effects. */
-.viewport[data-phase="combat"] .combatArt .person{height:min(98%,300px)!important;bottom:-2px!important;left:51%!important}
-.viewport[data-phase="combat"] .combatArt .person.person_hunter{height:300px!important;bottom:-15px!important;transform:translateX(-50%) scale(.65)!important}
+.viewport .landscape .person.person_hunter > div{display:block!important}
+/* Title background stays visible; do not enlarge a 260px portrait into a full-screen blurry block. */
+.viewport[data-phase="title"] .titleArtwork .person {
+  left:62%!important;height:min(88%,310px)!important;bottom:-7px!important;
+}
+/* Scenes: the native character drawing is an overlay, never an opaque rectangular image. */
+.viewport[data-phase="story"] .storyArtwork .person {
+  left:50%!important;height:min(85%,278px)!important;bottom:-5px!important;
+}
+/* Combat: the one-screen HUD and slash/ability effects continue to work. */
+.viewport[data-phase="combat"] .combatArt .person {
+  height:min(84%,225px)!important;bottom:0!important;left:50%!important;
+}
+.viewport[data-phase="combat"] .combatArt .person.person_hunter {
+  height:300px!important;bottom:-15px!important;transform:translateX(-50%) scale(.58)!important;
+}
 @media(max-height:690px){
-  .viewport[data-phase="combat"] .combatArt .person.person_hunter{transform:translateX(-50%) scale(.53)!important}
+  .viewport[data-phase="combat"] .combatArt .person.person_hunter{transform:translateX(-50%) scale(.50)!important}
 }
