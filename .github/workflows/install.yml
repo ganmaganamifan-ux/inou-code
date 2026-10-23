@@ -1,4 +1,4 @@
-name: Inou Code v0.6.2 Cast Fix
+name: Inou Code v0.6.3 Visual Fix
 on:
   push:
     branches: [main]
@@ -15,50 +15,46 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
+      url: \${{ steps.publish.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-      - name: Download verified original cast
+      - name: Download and verify character update
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3 --max-time 120 \
-            'https://inou-code-release-storage-1ir5ld.v2.appdeploy.ai/install-v062.yml' \
-            -o /tmp/inou-v062.yml
-          echo '184d6a3cc76cb22f52d173a750c1a82b4535135411336bd372d65cc8cfffa846  /tmp/inou-v062.yml' | sha256sum -c -
-      - name: Install original character sprites
+          curl -fLsS --retry 3 --max-time 120 \
+            https://inou-code-release-storage-1ir5ld.v2.appdeploy.ai/v063-art-data.txt \
+            -o /tmp/v063-art.txt
+          curl -fLsS --retry 3 --max-time 120 \
+            https://inou-code-release-storage-1ir5ld.v2.appdeploy.ai/v063-installer.txt \
+            -o /tmp/v063-install.py
+          echo '22ba598bc79e7f4457649e193da1f8624284eb7406c44d108e7a39f867eba7a2  /tmp/v063-art.txt' | sha256sum -c -
+          echo 'ec156be3accf5b8bf982489cd34e430b926339f08932d66bac210e0a399c27e5  /tmp/v063-install.py' | sha256sum -c -
+      - name: Fix original cast graphics
         shell: bash
         run: |
           set -euo pipefail
-          python3 -m pip install --quiet PyYAML
-          python3 - <<'PY'
-          import os, subprocess
-          from pathlib import Path
-          import yaml
-          release = yaml.safe_load(Path('/tmp/inou-v062.yml').read_text(encoding='utf-8'))
-          installer = next(s for s in release['jobs']['deploy']['steps'] if s.get('name') == 'Install original six characters')
-          env = os.environ.copy()
-          env.update(installer['env'])
-          assert 'ART' in env and 'PATCH' in env, 'Missing release data'
-          env['INOU_CANON_SPRITE'] = env['ART']
-          subprocess.run(['bash', '-e', '-o', 'pipefail', '-c', installer['run']], env=env, check=True)
-          PY
-      - name: Build and test
+          python3 /tmp/v063-install.py /tmp/v063-art.txt
+          npm pkg set version=0.6.3
+          npm install --package-lock-only --no-audit --no-fund
+      - name: Build and check game
+        shell: bash
         run: |
           npm ci --no-audit --no-fund
           npm run build
-      - name: Commit installed artwork
+      - name: Commit game update
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add pages/character-canon-v062.avif pages/_index.module.css pages/_index.tsx helpers/GameData.tsx package.json package-lock.json
+          git add pages/character-canon-v063.webp pages/_index.module.css package.json package-lock.json
           if ! git diff --cached --quiet; then
-            git commit -m 'Restore original cast v0.6.2'
+            git commit -m 'Improve original cast visual quality v0.6.3'
             git push origin HEAD:main
           fi
       - uses: actions/configure-pages@v5
@@ -66,3 +62,4 @@ jobs:
         with:
           path: ./dist
       - uses: actions/deploy-pages@v4
+        id: publish
